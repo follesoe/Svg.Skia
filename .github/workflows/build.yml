@@ -32,7 +32,7 @@ jobs:
       run: dotnet test -c Release
     - name: Pack
       if: github.event_name != 'pull_request'
-      run: dotnet pack --version-suffix "$GITHUB_RUN_NUMBER" -c Release -o ./artifacts/NuGet
+      run: dotnet pack -c Release -o ./artifacts/NuGet
     - name: Publish
       run: |
         dotnet nuget add source --name github "https://nuget.pkg.github.com/follesoe/index.json"
