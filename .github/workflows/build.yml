@@ -15,7 +15,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [macos-latest]
     name: Build ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -32,4 +32,8 @@ jobs:
       run: dotnet test -c Release
     - name: Pack
       if: github.event_name != 'pull_request'
-      run: dotnet pack -c Release -o ./artifacts/NuGet
+      run: dotnet pack --version-suffix "$GITHUB_RUN_NUMBER" -c Release -o ./artifacts/NuGet
+    - name: Publish
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      run: dotnet nuget push ./artifacts/NuGet/*.nupkg --skip-duplicate --no-symbols --api-key $NUGET_AUTH_TOKEN
